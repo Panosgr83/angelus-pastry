@@ -90,14 +90,14 @@ export function Contact() {
 
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden h-[600px] animate-slide-in-right">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3143.8747384891634!2d23.752824315530424!3d38.01878797971847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a1a2e7f7f7f7f7%3A0x0!2zMzjCsDAxJzA3LjYiTiAyM8KwNDUnMTcuNCJF!5e0!3m2!1sel!2sgr!4v1234567890"
+              src="https://maps.google.com/maps?q=%CE%9A%CE%B1%CE%B2%CE%B2%CE%B1%CE%B4%CE%AF%CE%B1+3+%CE%93%CE%B1%CE%BB%CE%AC%CF%84%CF%83%CE%B9&t=&z=17&ie=UTF8&iwloc=&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Χάρτης Angelus Bakery"
+              title="Χάρτης Angelus Bakery - Καββαδία 3, Γαλάτσι"
             ></iframe>
           </div>
         </div>

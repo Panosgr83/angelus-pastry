@@ -24,5 +24,7 @@ export interface Product {
   image_url: string;
   display_order: number;
   featured: boolean;
+  price: number | null;
+  price_label: string;
   created_at: string;
 }

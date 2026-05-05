@@ -32,9 +32,15 @@ export function ProductCard({ product }: ProductCardProps) {
           <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-all duration-300 transform group-hover:translate-x-1">
             {product.name}
           </h3>
-          <p className="text-gray-600 leading-relaxed line-clamp-3 group-hover:text-gray-700 transition-colors">
+          <p className="text-gray-600 leading-relaxed line-clamp-3 group-hover:text-gray-700 transition-colors mb-4">
             {product.description}
           </p>
+          {product.price_label && (
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+              <span className="text-emerald-700 font-bold text-lg">{product.price_label}</span>
+              <span className="text-xs text-gray-400 font-medium group-hover:text-emerald-600 transition-colors">Δείτε περισσότερα →</span>
+            </div>
+          )}
         </div>
       </div>
     </Link>
