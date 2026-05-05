@@ -8,7 +8,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Link to={`/product/${product.id}`}>
+    <Link to={`/product/${product.slug || product.id}`}>
       <div className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer animate-fade-in-up relative">
         <div className="absolute inset-0 bg-gradient-to-t from-emerald-600/0 to-emerald-600/0 group-hover:from-emerald-600/5 group-hover:to-transparent transition-all duration-500 z-10 pointer-events-none rounded-2xl"></div>
 

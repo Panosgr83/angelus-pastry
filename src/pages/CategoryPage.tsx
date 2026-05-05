@@ -1,40 +1,34 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { supabase, Product, Category } from '../lib/supabase';
+import { supabase, Product } from '../lib/supabase';
 import { ProductCard } from '../components/ProductCard';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { Loader2, ArrowLeft, Grid3x3 as Grid3X3 } from 'lucide-react';
+import { useCategoryBySlug } from '../hooks/useProducts';
 
 export function CategoryPage() {
-  const { categoryId } = useParams<{ categoryId: string }>();
-  const [category, setCategory] = useState<Category | null>(null);
+  const { categorySlug } = useParams<{ categorySlug: string }>();
+  const { category, loading: categoryLoading } = useCategoryBySlug(categorySlug);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      if (!categoryId) return;
+    if (!category) return;
 
-      const { data: categoryData } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('id', categoryId)
-        .maybeSingle();
-
-      const { data: productsData } = await supabase
+    async function fetchProducts() {
+      const { data } = await supabase
         .from('products')
         .select('*')
-        .eq('category_id', categoryId)
+        .eq('category_id', category!.id)
         .order('display_order');
 
-      setCategory(categoryData);
-      setProducts(productsData || []);
-      setLoading(false);
+      setProducts(data || []);
+      setProductsLoading(false);
     }
 
-    fetchData();
-  }, [categoryId]);
+    fetchProducts();
+  }, [category]);
 
-  if (loading) {
+  if (categoryLoading || productsLoading) {
     return (
       <div className="flex justify-center items-center py-20 min-h-screen">
         <Loader2 className="animate-spin text-emerald-600" size={48} />
@@ -46,42 +40,63 @@ export function CategoryPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <p className="text-center text-gray-600">Η κατηγορία δεν βρέθηκε</p>
+        <div className="text-center mt-4">
+          <Link to="/" className="text-emerald-700 hover:underline">Επιστροφή στην Αρχική</Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-emerald-700 hover:text-emerald-800 mb-8 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span>Επιστροφή στην Αρχική</span>
-        </Link>
-
-        <div className="mb-12">
-          <div className="inline-block px-4 py-2 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium mb-4">
-            Κατηγορία
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white">
+      {/* Hero banner */}
+      <div className="relative h-64 md:h-80 overflow-hidden">
+        {category.image_url && (
+          <img
+            src={category.image_url}
+            alt={category.name}
+            className="w-full h-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+        <div className="absolute inset-0 flex items-end">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 w-full">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 transition-colors text-sm"
+            >
+              <ArrowLeft size={16} />
+              <span>Αρχική</span>
+            </Link>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-600/90 backdrop-blur-sm text-white rounded-full text-xs font-medium mb-3">
+              <Grid3X3 size={12} />
+              Κατηγορία
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-white">{category.name}</h1>
           </div>
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">{category.name}</h1>
-          <p className="text-xl text-gray-600 max-w-3xl">{category.description}</p>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {category.description && (
+          <p className="text-xl text-gray-600 max-w-3xl mb-10 animate-fade-in-up">{category.description}</p>
+        )}
 
         {products.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
-              <Link key={product.id} to={`/product/${product.id}`}>
+            {products.map((product, index) => (
+              <div
+                key={product.id}
+                className="animate-fade-in-up"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 <ProductCard product={product} />
-              </Link>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-2xl shadow-md">
-            <p className="text-gray-500 text-lg">
-              Δεν υπάρχουν προϊόντα σε αυτήν την κατηγορία
-            </p>
+          <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
+            <p className="text-gray-500 text-lg">Δεν υπάρχουν προϊόντα σε αυτήν την κατηγορία</p>
           </div>
         )}
       </div>

@@ -12,12 +12,9 @@ export function useProducts() {
         .select('*')
         .order('display_order');
 
-      if (!error && data) {
-        setProducts(data);
-      }
+      if (!error && data) setProducts(data);
       setLoading(false);
     }
-
     fetchProducts();
   }, []);
 
@@ -35,12 +32,9 @@ export function useCategories() {
         .select('*')
         .order('display_order');
 
-      if (!error && data) {
-        setCategories(data);
-      }
+      if (!error && data) setCategories(data);
       setLoading(false);
     }
-
     fetchCategories();
   }, []);
 
@@ -60,14 +54,55 @@ export function useFeaturedProducts() {
         .order('display_order')
         .limit(6);
 
-      if (!error && data) {
-        setProducts(data);
-      }
+      if (!error && data) setProducts(data);
       setLoading(false);
     }
-
     fetchFeatured();
   }, []);
 
   return { products, loading };
+}
+
+export function useCategoryBySlug(slug: string | undefined) {
+  const [category, setCategory] = useState<Category | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!slug) { setLoading(false); return; }
+
+    async function fetchCategory() {
+      const { data } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle();
+      setCategory(data);
+      setLoading(false);
+    }
+    fetchCategory();
+  }, [slug]);
+
+  return { category, loading };
+}
+
+export function useProductBySlug(slug: string | undefined) {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!slug) { setLoading(false); return; }
+
+    async function fetchProduct() {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('slug', slug)
+        .maybeSingle();
+      setProduct(data);
+      setLoading(false);
+    }
+    fetchProduct();
+  }, [slug]);
+
+  return { product, loading };
 }
